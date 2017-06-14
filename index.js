@@ -1,6 +1,5 @@
 chrome.runtime.onMessage.addListener(function (msg, sender, sendResponse) {
   if (msg.text && (msg.text == "blow_up")) {
-    // window.location.href = msg.img;
     var canvas = document.createElement('canvas');
     var height = window.innerHeight;
     var width = window.innerWidth;
@@ -34,21 +33,27 @@ chrome.runtime.onMessage.addListener(function (msg, sender, sendResponse) {
       var current = 0;
       ctx.strokeStyle = 'white';
       ctx.globalCompositeOperation = 'difference';
-      
+
       while (current <= outer) {
         ctx.beginPath();
         ctx.arc(x, y, start + current, 0, 3 * Math.PI);
         ctx.stroke();
         current += 50;
       }
-      
+
       outer += 50;
       blink = !blink;
 
       if (outer <= furthest) {
-        setTimeout(function() {
+        setTimeout(function () {
           animate(x, y);
         }, 100);
+      } else {
+        setTimeout(function () {
+          document.removeEventListener('click', handleClick);
+          document.body.classList.remove('activeDynamite');
+          document.body.innerHTML = '';
+        }, 500);
       }
     }
 
@@ -56,21 +61,22 @@ chrome.runtime.onMessage.addListener(function (msg, sender, sendResponse) {
       return Math.sqrt(((x2 - x1) * (x2 - x1)) + ((y2 - y1) * (y2 - y1)));
     }
 
+    function handleClick(e) {
+      var x = e.clientX;
+      var y = e.clientY;
+      var toTopLeft = distanceBetween(x, y, 0, 0);
+      var toTopRight = distanceBetween(x, y, width, 0);
+      var toBottomLeft = distanceBetween(x, y, 0, height);
+      var toBottomRight = distanceBetween(x, y, width, height);
+      furthest = Math.max(toTopLeft, toTopRight, toBottomLeft, toBottomRight);
+      animate(x, y);
+    }
+
     canvas.id = 'activeTabScreenshot';
     document.body.appendChild(canvas);
     image.onload = function () {
-      // animate();
       document.body.className += ' activeDynamite';
-      document.addEventListener('click', function(e) {
-        var x = e.clientX;
-        var y = e.clientY;
-        var toTopLeft = distanceBetween(x, y, 0, 0);
-        var toTopRight = distanceBetween(x, y, width, 0);
-        var toBottomLeft = distanceBetween(x, y, 0, height);
-        var toBottomRight = distanceBetween(x, y, width, height);
-        furthest = Math.max(toTopLeft, toTopRight, toBottomLeft, toBottomRight);
-        animate(x, y);
-      });
+      document.addEventListener('click', handleClick);
     }
   }
 });
