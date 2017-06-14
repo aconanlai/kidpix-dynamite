@@ -30,7 +30,7 @@ function animate() {
   console.log('one step')
   ctx.globalCompositeOperation = 'source-over';
   clear();
-  ctx.drawImage(image, 0, 0);
+  // ctx.drawImage(image, 0, 0);
   //inverted text
 
   // ctx.beginPath();
@@ -44,15 +44,15 @@ function animate() {
 
   var start = blink ? 50 : 75;
   var current = 0;
+  ctx.strokeStyle = 'black';
   ctx.beginPath();
-  ctx.strokeStyle = 'white';
-  ctx.globalCompositeOperation='difference';
+  // ctx.globalCompositeOperation='difference';
   while (current <= outer) {
     ctx.arc(center, height, start + current, 0, 2 * Math.PI);
     current += 50;
   }
-  ctx.stroke();
   ctx.closePath();
+  ctx.stroke();
   outer += 50;
   blink = !blink;
 
