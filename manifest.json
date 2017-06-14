@@ -5,7 +5,7 @@
   "description": "blows up the webpage",
   "version": "1.0",
   "icons": {
-    "16": "icon16.png",
+    "24": "icon24.png",
     "48": "icon48.png"
   },
   "browser_action": {

@@ -13,6 +13,8 @@ chrome.runtime.onMessage.addListener(function (msg, sender, sendResponse) {
     var center = width / 2;
     ctx.lineWidth = 25;
     var outer = 150;
+    var furthest = 0;
+
     var blink = true;
 
     var image = new Image();
@@ -22,7 +24,8 @@ chrome.runtime.onMessage.addListener(function (msg, sender, sendResponse) {
       ctx.clearRect(0, 0, width, height);
     }
 
-    function animate() {
+    function animate(x, y) {
+      console.log('hua');
       ctx.globalCompositeOperation = 'source-over';
       clear();
       ctx.drawImage(image, 0, 0, width, height);
@@ -34,7 +37,7 @@ chrome.runtime.onMessage.addListener(function (msg, sender, sendResponse) {
       
       while (current <= outer) {
         ctx.beginPath();
-        ctx.arc(center, height / 2, start + current, 0, 3 * Math.PI);
+        ctx.arc(x, y, start + current, 0, 3 * Math.PI);
         ctx.stroke();
         current += 50;
       }
@@ -42,15 +45,32 @@ chrome.runtime.onMessage.addListener(function (msg, sender, sendResponse) {
       outer += 50;
       blink = !blink;
 
-      if (outer <= height) {
-        setTimeout(animate, 100);
+      if (outer <= furthest) {
+        setTimeout(function() {
+          animate(x, y);
+        }, 100);
       }
     }
 
-    image.onload = function () {
-      animate();
+    function distanceBetween(x1, y1, x2, y2) {
+      return Math.sqrt(((x2 - x1) * (x2 - x1)) + ((y2 - y1) * (y2 - y1)));
     }
+
     canvas.id = 'activeTabScreenshot';
     document.body.appendChild(canvas);
+    image.onload = function () {
+      // animate();
+      document.body.className += ' activeDynamite';
+      document.addEventListener('click', function(e) {
+        var x = e.clientX;
+        var y = e.clientY;
+        var toTopLeft = distanceBetween(x, y, 0, 0);
+        var toTopRight = distanceBetween(x, y, width, 0);
+        var toBottomLeft = distanceBetween(x, y, 0, height);
+        var toBottomRight = distanceBetween(x, y, width, height);
+        furthest = Math.max(toTopLeft, toTopRight, toBottomLeft, toBottomRight);
+        animate(x, y);
+      });
+    }
   }
 });
