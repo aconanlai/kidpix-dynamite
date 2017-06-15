@@ -9,7 +9,6 @@ chrome.runtime.onMessage.addListener(function (msg, sender, sendResponse) {
     var ctx = canvas.getContext('2d');
     ctx.imageSmoothingEnabled = false;
 
-    var center = width / 2;
     ctx.lineWidth = 25;
     var outer = 150;
     var furthest = 0;
@@ -75,8 +74,15 @@ chrome.runtime.onMessage.addListener(function (msg, sender, sendResponse) {
     canvas.id = 'activeTabScreenshot';
     document.body.appendChild(canvas);
     image.onload = function () {
-      document.body.className += ' activeDynamite';
+      document.body.classList.add('activeDynamite');
       document.addEventListener('click', handleClick);
+      document.addEventListener('keydown', function(e) {
+        // press escape to cancel
+        if (e.keyCode === 27) {
+          document.removeEventListener('click', handleClick);
+          document.body.classList.remove('activeDynamite');
+        }
+      });
     }
   }
 });

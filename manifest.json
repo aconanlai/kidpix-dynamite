@@ -26,7 +26,6 @@
         "style.css"
       ],
       "js": [
-        "html2canvas.js",
         "index.js"
       ]
     }
