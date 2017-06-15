@@ -2,7 +2,7 @@
   "manifest_version": 2,
   "name": "kidpix dynamite",
   "short_name": "kidpix_dynamite",
-  "description": "blows up the webpage",
+  "description": "replicates Kid Pix's dynamite eraser tool in Chrome - blow up any website on sight.",
   "version": "1.0",
   "icons": {
     "24": "icon24.png",
